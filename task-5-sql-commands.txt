@@ -1,0 +1,48 @@
+• Task 5.1:
+
+SELECT 
+*, 
+(
+SELECT customer_id
+FROM orders 
+WHERE orders.id = order_details.order_id
+) as customer_id
+FROM order_details 
+
+
+• Task 5.2:
+SELECT * 
+FROM order_details
+WHERE order_details.order_id IN (SELECT id FROM orders WHERE orders.shipper_id = 3)
+
+• Task 5.3:
+SELECT AVG(quantity), order_id
+FROM (SELECT quantity, order_id FROM order_details WHERE order_details.quantity > 10) as temp_table
+GROUP BY temp_table.order_id
+
+• Task 5.4:
+WITH temp_table AS(
+	SELECT quantity, order_id 
+	FROM order_details 
+	WHERE order_details.quantity > 10
+)
+SELECT AVG(quantity), order_id
+FROM temp_table
+GROUP BY order_id
+
+• Task 5.5:
+DROP FUNCTION IF EXISTS Custom_division;
+
+DELIMITER //
+
+CREATE FUNCTION Custom_division(input_number FLOAT, input_value FLOAT)
+RETURNS FLOAT
+DETERMINISTIC
+NO SQL
+BEGIN
+	DECLARE result INT DEFAULT 0;
+    SET result = input_number / input_value;
+    RETURN result;
+END //
+
+DELIMITER ;
